@@ -1,5 +1,5 @@
 import React from "react";
-import { SimpleGrid } from "@chakra-ui/react";
+import { SimpleGrid, Text } from "@chakra-ui/react";
 import { ProductListCard } from "..";
 import { Product } from "../../interfaces/types";
 
@@ -9,7 +9,7 @@ interface ProductListProps {
 
 export const ProductList: React.FC<ProductListProps> = ({ products }) => {
   if (products.length === 0) {
-    return <p>No products found</p>;
+    return <Text>No products found</Text>;
   }
 
   return (

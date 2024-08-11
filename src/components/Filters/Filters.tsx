@@ -15,7 +15,7 @@ import {
 interface FiltersProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedCategories: any;
+  selectedCategories: Set<string>;
   handleCategoryChange: (category: string) => void;
 }
 
