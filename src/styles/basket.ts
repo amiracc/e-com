@@ -1,7 +1,17 @@
 import { ComponentStyleConfig } from "@chakra-ui/react";
 
 const Basket: ComponentStyleConfig = {
-  parts: ["container", "stage", "info"],
+  parts: [
+    "container",
+    "imageContainer",
+    "imageWrapper",
+    "image",
+    "infoWrapper",
+    "closeIcon",
+    "title",
+    "innerDetailsWrapper",
+    "flexWrapper",
+  ],
   baseStyle: {
     container: {
       cursor: "pointer",

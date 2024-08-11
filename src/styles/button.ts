@@ -47,8 +47,7 @@ const sizes = {
   }),
 };
 
-// Multiple variants of button, in this case very similar in our actual code very different and many.
-// Please check email images.
+// Multiple variants for the button
 const variants = {
   solidPDP: variantSolidPDP,
   secondary: variantSecondary,

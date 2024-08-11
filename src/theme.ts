@@ -5,6 +5,7 @@ import ProductCard from "./styles/productCard";
 import ProductDetail from "./styles/productDetail";
 import Basket from "./styles/basket";
 import Header from "./styles/header";
+import Home from "./styles/home";
 
 const theme = extendTheme({
   components: {
@@ -14,6 +15,7 @@ const theme = extendTheme({
     ProductCard,
     ProductDetail,
     Header,
+    Home,
   },
 });
 

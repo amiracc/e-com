@@ -1,35 +1,30 @@
 import React, { useEffect, useState } from "react";
 import {
-  Container,
   Spinner,
   Box,
   Center,
   Input,
-  Checkbox,
-  Stack,
-  FormControl,
-  FormLabel,
-  Drawer,
-  DrawerBody,
   Button,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  DrawerHeader,
   useDisclosure,
+  useMultiStyleConfig,
 } from "@chakra-ui/react";
 import { FilterIcon } from "../ui/FilterIcon";
 import { useSearchParams } from "react-router-dom";
-import { ProductList } from "../components";
+import { ProductList, Filters } from "../components";
 import { useProducts } from "../hooks/useProducts";
 
 export const Home: React.FC = () => {
+  const styles = useMultiStyleConfig("Home");
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState<string>(
     searchParams.get("search") || ""
   );
+
+  // Using Set instead of array in a few places for handling uniquness and
+  // efficiency when it comes to looking up for/removing etc. a value
   const [selectedCategories, setSelectedCategories] = useState<Set<string>>(
     new Set(searchParams.getAll("category"))
   );
@@ -58,10 +53,12 @@ export const Home: React.FC = () => {
     setSelectedCategories(new Set(categories));
   }, [searchParams]);
 
+  // Search
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value.toLowerCase());
   };
 
+  // Filter
   const handleCategoryChange = (category: string) => {
     setSelectedCategories((prev) => {
       const newCategories = new Set(prev);
@@ -84,23 +81,24 @@ export const Home: React.FC = () => {
     return matchesSearch && matchesCategory;
   });
 
+  // Handling loading and errors of fetching products
   if (isLoading)
     return (
       <Center minH="calc(100vh - 80px)">
         <Spinner size="xl" />
       </Center>
     );
-  if (error) return <Box>Error: {error.message}</Box>;
+
+  if (error)
+    return (
+      <Center minH="calc(100vh - 80px)">
+        <Box>Error: {error.message}</Box>
+      </Center>
+    );
 
   return (
-    <Box p={4} backgroundColor="#f0f0f0">
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="flex-end"
-        gap={2}
-        pb={4}
-      >
+    <Box sx={styles.container}>
+      <Box sx={styles.wrapper}>
         <Button
           onClick={onOpen}
           colorScheme="teal"
@@ -114,61 +112,15 @@ export const Home: React.FC = () => {
           placeholder="Search by name"
           value={searchTerm}
           onChange={handleSearch}
-          width="auto"
-          border="1px solid #e1e1e1"
-          _hover={{
-            border: "1px solid #c7c7c7",
-          }}
-          _focus={{
-            border: "1px solid #c7c7c7",
-            boxShadow: "none",
-          }}
+          sx={styles.input}
         />
       </Box>
-
-      <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="sm">
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>Filters</DrawerHeader>
-
-          <DrawerBody>
-            <FormControl>
-              <FormLabel>Categories</FormLabel>
-              <Stack spacing="2">
-                <Checkbox
-                  colorScheme="teal"
-                  isChecked={selectedCategories.has("electronics")}
-                  onChange={() => handleCategoryChange("electronics")}
-                >
-                  Electronics
-                </Checkbox>
-                <Checkbox
-                  isChecked={selectedCategories.has("jewelery")}
-                  onChange={() => handleCategoryChange("jewelery")}
-                  colorScheme="teal"
-                >
-                  Jewelery
-                </Checkbox>
-                <Checkbox
-                  isChecked={selectedCategories.has("men's clothing")}
-                  onChange={() => handleCategoryChange("men's clothing")}
-                  colorScheme="teal"
-                >
-                  Men’s Clothing
-                </Checkbox>
-                <Checkbox
-                  isChecked={selectedCategories.has("women's clothing")}
-                  onChange={() => handleCategoryChange("women's clothing")}
-                  colorScheme="teal"
-                >
-                  Women’s Clothing
-                </Checkbox>
-              </Stack>
-            </FormControl>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+      <Filters
+        isOpen={isOpen}
+        onClose={onClose}
+        handleCategoryChange={handleCategoryChange}
+        selectedCategories={selectedCategories}
+      />
       <ProductList products={filteredProducts || []} />
     </Box>
   );
